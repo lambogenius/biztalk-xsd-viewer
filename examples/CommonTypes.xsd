@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:lambogenius:common" elementFormDefault="qualified">
+  <xs:complexType name="AddressType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+      <xs:element name="Street" type="xs:string" />
+      <xs:element name="City" type="xs:string" />
+      <xs:element name="Province" type="xs:string" minOccurs="0" />
+      <xs:element name="PostalCode" type="xs:string" />
+      <xs:element name="Country" type="xs:string" default="CA" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="CurrencyCode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CAD" />
+      <xs:enumeration value="USD" />
+      <xs:enumeration value="EUR" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MoneyType">
+    <xs:restriction base="xs:decimal">
+      <xs:minInclusive value="0" />
+      <xs:fractionDigits value="2" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

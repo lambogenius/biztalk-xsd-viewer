@@ -1,0 +1,51 @@
+{
+  "name": "biztalk-xsd-viewer",
+  "displayName": "Lambogenius XSD Viewer",
+  "description": "Explore XML schemas in a BizTalk-inspired record and field tree with a properties inspector.",
+  "version": "0.1.0",
+  "publisher": "Lambogenius",
+  "license": "MIT",
+  "engines": { "vscode": "^1.96.0" },
+  "categories": ["Visualization", "Programming Languages"],
+  "keywords": ["xsd", "xml", "schema", "biztalk", "flat file"],
+  "main": "./dist/extension.js",
+  "icon": "media/icon.png",
+  "activationEvents": ["onCustomEditor:lambogenius.xsdViewer"],
+  "capabilities": { "untrustedWorkspaces": { "supported": true }, "virtualWorkspaces": true },
+  "contributes": {
+    "commands": [
+      { "command": "xsdViewer.open", "title": "XSD Viewer: Open Schema", "icon": "$(type-hierarchy)" },
+      { "command": "xsdViewer.openExample", "title": "XSD Viewer: Open Example Schema" }
+    ],
+    "customEditors": [{
+      "viewType": "lambogenius.xsdViewer",
+      "displayName": "XSD Schema Viewer",
+      "selector": [{ "filenamePattern": "*.xsd" }, { "filenamePattern": "*.XSD" }],
+      "priority": "option"
+    }],
+    "menus": {
+      "explorer/context": [{ "command": "xsdViewer.open", "when": "resourceExtname =~ /\\.[xX][sS][dD]/", "group": "navigation@10" }],
+      "editor/title": [{ "command": "xsdViewer.open", "when": "resourceExtname =~ /\\.[xX][sS][dD]/ && activeCustomEditorId != lambogenius.xsdViewer", "group": "navigation" }]
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "watch": "node scripts/build.mjs --watch",
+    "check": "tsc --noEmit",
+    "test": "node scripts/test.mjs",
+    "test:ui": "node tests/webview.mjs",
+    "test:extension": "node scripts/test-extension.mjs",
+    "package": "vsce package --no-dependencies --no-rewrite-relative-links --allow-missing-repository --out releases/",
+    "vscode:prepublish": "npm run check && npm run build"
+  },
+  "dependencies": { "saxes": "^6.0.0" },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.96.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.7.0",
+    "esbuild": "^0.25.0",
+    "playwright": "^1.56.0",
+    "typescript": "^5.9.0"
+  }
+}

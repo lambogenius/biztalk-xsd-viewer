@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:po="urn:lambogenius:purchase-order"
+           xmlns:common="urn:lambogenius:common"
+           xmlns:b="http://schemas.microsoft.com/BizTalk/2003"
+           targetNamespace="urn:lambogenius:purchase-order"
+           elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:documentation>A purchase order message exchanged between trading partners.</xs:documentation>
+    <xs:appinfo>
+      <b:schemaInfo standard="XML" root_reference="PurchaseOrder" document_type="PurchaseOrder" version="1.0" />
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:import namespace="urn:lambogenius:common" schemaLocation="CommonTypes.xsd" />
+  <xs:element name="PurchaseOrder">
+    <xs:annotation>
+      <xs:documentation>The root record. Contains the order header, delivery address, line items, and payment details.</xs:documentation>
+      <xs:appinfo><b:recordInfo structure="delimited" child_delimiter_type="hex" child_delimiter="0x0D 0x0A" /></xs:appinfo>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Header">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="OrderNumber" type="xs:string">
+                <xs:annotation><xs:documentation>Unique order identifier assigned by the buyer.</xs:documentation><xs:appinfo><b:fieldInfo property_name="OrderNumber" promoted="true" /></xs:appinfo></xs:annotation>
+              </xs:element>
+              <xs:element name="OrderDate" type="xs:date" />
+              <xs:element name="CustomerId" type="xs:string" />
+              <xs:element name="Currency" type="common:CurrencyCode" default="CAD" />
+            </xs:sequence>
+            <xs:attribute name="version" type="xs:string" fixed="1.0" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ShipTo" type="common:AddressType">
+          <xs:annotation><xs:documentation>Delivery address for this order. Uses the shared address definition.</xs:documentation></xs:annotation>
+        </xs:element>
+        <xs:element name="LineItems">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="LineItem" maxOccurs="unbounded">
+                <xs:annotation><xs:documentation>One or more products included in the order.</xs:documentation></xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ProductCode" type="xs:string" />
+                    <xs:element name="Description" type="xs:string" minOccurs="0" />
+                    <xs:element name="Quantity" type="xs:positiveInteger" />
+                    <xs:element name="UnitPrice" type="common:MoneyType" />
+                  </xs:sequence>
+                  <xs:attribute name="lineNumber" type="xs:positiveInteger" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Payment">
+          <xs:complexType>
+            <xs:choice>
+              <xs:element name="CreditCardToken" type="xs:string" />
+              <xs:element name="AccountNumber" type="xs:string" />
+            </xs:choice>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Notes" type="xs:string" minOccurs="0" nillable="true" />
+      </xs:sequence>
+      <xs:attribute name="orderId" type="xs:ID" use="required" />
+      <xs:attribute name="priority" default="normal">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="normal" />
+            <xs:enumeration value="urgent" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
